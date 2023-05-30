@@ -4,7 +4,7 @@ import { TileBox } from 'features/Tiles/components/TileBox';
 import { Tile } from 'features/Tiles/types/Tile';
 import { TileHandler } from 'features/Tiles/types/Tilehandler';
 
-const size: number = 70;
+const size: number = 40;
 
 export function Main ()  {
   const tileHandler = useMemo<TileHandler>(() => new TileHandler(3,3), []);
