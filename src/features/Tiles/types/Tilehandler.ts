@@ -7,7 +7,6 @@ export class TileHandler {
   height: number;
 
   constructor(width: number, height: number) {
-    console.log('Bybys');
     this.tiles = [];
     this.width = width;
     this.height = height;
@@ -23,34 +22,35 @@ export class TileHandler {
     this.tiles[height-1][width-1].empty = true;
   }
  
-  move(tileIndex: number) {
-
-    console.log(tileIndex + ' tile index');
+  moveMultiple(tileIndex: number) {
     const tilePosition = this.getTilePosition(tileIndex);
-    console.log(JSON.stringify(tilePosition) + ' tilePosition');
-    const postitionToMoveTo = this.canMove(tilePosition);
-    console.log(JSON.stringify(postitionToMoveTo) + ' postitionToMoveTo');
+    const movementDirection = this.findMovementDirection(tilePosition);
 
-    if (postitionToMoveTo === undefined) {
-      console.log('??');
+    if (movementDirection === undefined) {
       return;
     }
 
+    let currentPosition = {...tilePosition}
+    let valueToSet = {...this.tiles[currentPosition.y][currentPosition.x]};
 
-    console.log('-----');
-    console.log(JSON.stringify(this.tiles));
+    while (!valueToSet.empty) {
+      let nextPosition = {x: currentPosition.x - movementDirection.x, y: currentPosition.y - movementDirection.y};
+      const toTile = this.tiles[nextPosition.y][nextPosition.x];
 
-    const fromTile = this.tiles[tilePosition.y][tilePosition.x];
-    const toTile = this.tiles[postitionToMoveTo.y][postitionToMoveTo.x];
+      const temp = {...toTile};
 
-    toTile.index = fromTile.index
-    toTile.empty = false;
+      toTile.index = valueToSet.index;
+      toTile.empty = false;
 
-    fromTile.index = 69;
-    fromTile.empty = true;
+      valueToSet = temp;
+      currentPosition = {...nextPosition};
+    }
 
-    console.log(JSON.stringify(this.tiles));
-    console.log('-----');
+    const initialTile = this.tiles[tilePosition.y][tilePosition.x];
+
+    initialTile.index = 69;
+    initialTile.empty = true;
+
     return;
   }
 
@@ -66,18 +66,27 @@ export class TileHandler {
     throw new Error(`Index not found ${tileIndex}`)
   }
 
-  canMove(position: Position): Position|undefined {
+  findMovementDirection(position: Position): Position|undefined {
     const deltas: Position[] = [{x: 1, y: 0}, {x: -1, y: 0}, {x: 0, y: 1}, {x: 0, y: -1}];
 
-    const surroundingPositions: Position[] =  deltas.map( (delta): Position => { 
-      return {x: position.x + delta.x, y: position.y + delta.y};
-    });
+    const [emptyDelta] =  deltas.filter( (delta) => this.isValidDirection(delta, position));
 
-    const validPositions = surroundingPositions.filter(p => this.isValidPosition(p));
+    return emptyDelta;
+  }
 
-    const [emptyTile] = validPositions.filter(p => this.tiles[p.y][p.x].empty);
+  isValidDirection(delta: Position, position: Position): boolean {
+    let currentPosition: Position = {...position};
 
-    return emptyTile;
+    while (true) {
+      currentPosition.x -= delta.x;
+      currentPosition.y -= delta.y;
+      if (!this.isValidPosition(currentPosition)) {
+        return false;
+      }
+      if (this.tiles[currentPosition.y][currentPosition.x].empty) {
+        return true;
+      }
+    }
   }
 
   isValidPosition(position: Position): boolean {
