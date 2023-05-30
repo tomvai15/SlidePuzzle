@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Box, Paper, Stack, Typography } from '@mui/material'
+import { Box, Paper, Stack } from '@mui/material'
 import { TileBox } from 'features/Tiles/components/TileBox';
 import { Tile } from 'features/Tiles/types/Tile';
 import { TileHandler } from 'features/Tiles/types/Tilehandler';
@@ -13,7 +13,7 @@ export function Main ()  {
   useEffect(() => {
     console.log(JSON.stringify(tileHandler.tiles));
     setTiles(tileHandler.tiles);
-  }, [])
+  }, [tileHandler])
 
   function handleTileClick(index: number) {
     tileHandler.move(index);

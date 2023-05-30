@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, Card, Paper, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { Tile } from '../types/Tile';
 
 type Props = {
