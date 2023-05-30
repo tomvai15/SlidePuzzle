@@ -54,6 +54,45 @@ export class TileHandler {
     return;
   }
 
+  moveMultiple(tileIndex: number) {
+    const tilePosition = this.getTilePosition(tileIndex);
+    const movementDirection = this.findMovementDirection(tilePosition);
+
+
+    console.log('???');
+    if (movementDirection === undefined) {
+      return;
+    }
+    console.log( JSON.stringify(movementDirection) +  ' ??? 2');
+    let currentPosition = {...tilePosition}
+    let valueToSet = {...this.tiles[currentPosition.y][currentPosition.x]};
+
+    while (!valueToSet.empty) {
+      console.log('x');
+      console.log(this.tiles[currentPosition.y][currentPosition.x]);
+
+
+      let nextPosition = {x: currentPosition.x - movementDirection.x, y: currentPosition.y - movementDirection.y};
+      console.log(nextPosition);
+      const toTile = this.tiles[nextPosition.y][nextPosition.x];
+
+      const temp = {...toTile};
+
+      toTile.index = valueToSet.index;
+      toTile.empty = false;
+
+      valueToSet = temp;
+      currentPosition = {...nextPosition};
+    }
+
+    const initialTile = this.tiles[tilePosition.y][tilePosition.x];
+
+    initialTile.index = 69;
+    initialTile.empty = true;
+
+    return;
+  }
+
   getTilePosition(tileIndex: number): Position {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
@@ -64,6 +103,29 @@ export class TileHandler {
       }
     }
     throw new Error(`Index not found ${tileIndex}`)
+  }
+
+  findMovementDirection(position: Position): Position|undefined {
+    const deltas: Position[] = [{x: 1, y: 0}, {x: -1, y: 0}, {x: 0, y: 1}, {x: 0, y: -1}];
+
+    const [emptyDelta] =  deltas.filter( (delta) => this.isValidDirection(delta, position));
+
+    return emptyDelta;
+  }
+
+  isValidDirection(delta: Position, position: Position): boolean {
+    let currentPosition: Position = {...position};
+
+    while (true) {
+      currentPosition.x -= delta.x;
+      currentPosition.y -= delta.y;
+      if (!this.isValidPosition(currentPosition)) {
+        return false;
+      }
+      if (this.tiles[currentPosition.y][currentPosition.x].empty) {
+        return true;
+      }
+    }
   }
 
   canMove(position: Position): Position|undefined {
