@@ -31,7 +31,7 @@ export class TileHandler {
     const postitionToMoveTo = this.canMove(tilePosition);
     console.log(JSON.stringify(postitionToMoveTo) + ' postitionToMoveTo');
 
-    if (postitionToMoveTo == undefined) {
+    if (postitionToMoveTo === undefined) {
       console.log('??');
       return;
     }
@@ -42,8 +42,6 @@ export class TileHandler {
 
     const fromTile = this.tiles[tilePosition.y][tilePosition.x];
     const toTile = this.tiles[postitionToMoveTo.y][postitionToMoveTo.x];
-
-    const toIndex = toTile.index;
 
     toTile.index = fromTile.index
     toTile.empty = false;
@@ -60,7 +58,7 @@ export class TileHandler {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
         console.log(this.tiles[y][x].index + ' ??');
-        if (this.tiles[y][x].index == tileIndex) {
+        if (this.tiles[y][x].index === tileIndex) {
           return { x: x, y: y};
         }
       }
