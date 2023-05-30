@@ -4,16 +4,18 @@ import { Tile } from '../types/Tile';
 
 type Props = {
   tile: Tile
+  height: number,
+  width: number,
   onClick: () => void
 }
 
-export function TileBox ({tile, onClick}: Props)  {
+export function TileBox ({tile, height, width, onClick}: Props)  {
   return ( tile.empty ? 
-    <Card sx={{width: '50px', height: '50px', backgroundColor: 'red'}}>
-    </Card>
+    <Button disabled sx={{width: width, height: height, backgroundColor: 'none'}}>
+    </Button>
     :
-    <Card onClick={onClick} sx={{width: '50px', height: '50px', backgroundColor: 'yellow'}}>
+    <Button variant='contained' onClick={onClick} sx={{"& .MuiButton-startIcon": { margin: 0 }, width: width, height: height}}>
       <Typography>{tile.index}</Typography>
-    </Card>
+    </Button>
   );
 }
