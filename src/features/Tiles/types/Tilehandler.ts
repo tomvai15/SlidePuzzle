@@ -1,5 +1,8 @@
 import { Tile } from "./Tile";
 import { Position } from "./Position";
+import { getRandomElement } from "utils/arrayHelpers";
+
+const _emptyTileIndex = -1;
 
 export class TileHandler {
   tiles: Tile[][];
@@ -20,6 +23,26 @@ export class TileHandler {
       this.tiles.push(newRow);
     }
     this.tiles[height-1][width-1].empty = true;
+    this.tiles[height-1][width-1].index = _emptyTileIndex;
+  }
+
+  makeRandomMove(): void {
+    const emptyTile = this.getTilePosition(_emptyTileIndex);
+    const moveableTiles: Tile[] = [];
+
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        if (this.tiles[y][x].empty) {
+          continue;
+        }
+        if (x === emptyTile.x || y === emptyTile.y) {
+          moveableTiles.push(this.tiles[y][x]);
+        }
+      }
+    }
+
+    const tileToMove = getRandomElement(moveableTiles);
+    this.moveMultiple(tileToMove.index);
   }
  
   moveMultiple(tileIndex: number) {
@@ -48,7 +71,7 @@ export class TileHandler {
 
     const initialTile = this.tiles[tilePosition.y][tilePosition.x];
 
-    initialTile.index = 69;
+    initialTile.index = _emptyTileIndex;
     initialTile.empty = true;
 
     return;
