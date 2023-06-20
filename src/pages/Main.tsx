@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Box, Paper, Slider, Stack } from '@mui/material'
+import { Box, Button, Paper, Slider, Stack } from '@mui/material'
 import { TileBox } from 'features/Tiles/components/TileBox';
 import { Tile } from 'features/Tiles/types/Tile';
 import { TileHandler } from 'features/Tiles/types/Tilehandler';
@@ -22,6 +22,17 @@ export function Main ()  {
     setTiles([...tileHandler.tiles]);
   }
 
+  function makeRandomMove() {
+    tileHandler.makeRandomMove();
+    setTiles([...tileHandler.tiles]);
+  }
+
+  function randomizeBoard() {
+    for (let i = 0; i < 500; i++) {
+      makeRandomMove();
+    }
+  }
+
   return (
     <Box
       sx={{
@@ -32,9 +43,10 @@ export function Main ()  {
       }}
       >
       <Paper elevation={1} sx={{height: '100%'}}>
-        <Stack direction={'column'} justifyContent={'center'}>
-          <Box sx={{width: '200px'}}>
+        <Stack spacing={1} direction={'column'} justifyContent={'center'}>
+          <Stack justifyContent={'space-between'} direction={'row'} sx={{width: '100%'}} spacing={1}>
             <Slider
+              sx={{width: '50%'}}
               aria-label="Board size"
               defaultValue={3}
               valueLabelDisplay="auto"
@@ -44,7 +56,8 @@ export function Main ()  {
               max={6}
               onChange={(e,value) => setBoardSize(value as number)}
             />
-          </Box>
+            <Button color='info' variant='contained' onClick={randomizeBoard}>Randomize board</Button>
+          </Stack>
           <Box>
             <Stack direction={'column'}>
               {tiles.map((tileRow, rowIndex) => 
